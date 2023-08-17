@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import PokemonCard from './Card.jsx'
 
 function App() {
   
@@ -39,22 +40,16 @@ function App() {
     setTimeout(function()
     {clickedCard.classList.remove('blinking-false');
       setFlipped(true);
-      console.log(isFlipped)
     }
     , 1000);
-    
+
     //flip the cards back
     setTimeout(function()
-    {setFlipped(false);
-      console.log(isFlipped)}
+    {setFlipped(false);}
     , 3000);
-   
-  }
 
-  function flipBack(){
+   }
 
-  }
-  
 
   function randomizeCards(){
     /* Randomize cardPositions array using Durstenfeld shuffle algorithm */
@@ -66,11 +61,6 @@ function App() {
       shuffledPokemons[j] = temp;
     }
     shuffleCards(shuffledPokemons)
-    console.log(cardPositions)
-    //fillArrayWithImages()
-    console.log(cardPositions)
-    console.log(cardPositions[0].name) 
-    console.log(cardPositions[0].imgUrl)
   }
 
   
@@ -86,8 +76,6 @@ function App() {
     scoreChange(score => score + 1)
     }
     //randomize cards from randomizeCards() function
-    console.log(score)
-    //initate randomizing the cards
     randomizeCards()
   }
 
@@ -132,58 +120,56 @@ function App() {
     }
     {gameStatus === 1 &&
     <div id='gameContainer'> 
-      <div id='card0'>
-        <img onClick={handleClick} name={cardPositions[0].name} src={cardPositions[0].imgUrl} alt="xd" />
-      </div>
-      <div id='card1'>
-        <img onClick={handleClick} name={cardPositions[1].name} src={cardPositions[1].imgUrl} alt="xd" />
-      </div>
-      <div id='card2'>
-        <img onClick={handleClick} name={cardPositions[2].name} src={cardPositions[2].imgUrl} alt="xd" />
-      </div>
-      <div id='card3'>
-        <img onClick={handleClick} name={cardPositions[3].name} src={cardPositions[3].imgUrl} alt="xd" />
-      </div>
-      <div id='card4'>
-        <img onClick={handleClick} name={cardPositions[4].name} src={cardPositions[4].imgUrl} alt="xd" />
-      </div>
-      <div id='card5'>
-        <img onClick={handleClick} name={cardPositions[5].name} src={cardPositions[5].imgUrl} alt="xd" />
-      </div>
-      <div>
-      <div id='card6'>
-        <div name="xd" onClick={handleBlinkClick}>
-        <img onClick={handleClick} name={cardPositions[6].name} src={cardPositions[6].imgUrl} alt="xd" />
-        </div>
-      </div>
-      </div>
-      <div className="scene scene--card">
-        {/* ADD THIS TOGGLE TO THE ALREADY EXISTING handleClick function.
-        Before you change the state of isFlipped, add a function for displaying the right or wrong choices! */}
-               {/* ADD THIS TOGGLE TO THE ALREADY EXISTING handleClick function.
-        Before you change the state of isFlipped, add a function for displaying the right or wrong choices! */}
-               {/* ADD THIS TOGGLE TO THE ALREADY EXISTING handleClick function.
-        Before you change the state of isFlipped, add a function for displaying the right or wrong choices! */}
-               {/* ADD 8bit or 16bit music*/}
-  <div onClick= {handleToggleFlip} 
-  className={ isFlipped
-     ? "card is-flipped" 
-     : "card"}   >
-    <div className="card__face card__face--front">
-      <div className="blinkContainer" onClick={handleBlinkClick}>
-    <img onClick={handleClick} name={cardPositions[6].name} src={cardPositions[6].imgUrl} alt="xd" />
-      </div>
-    </div>
-    <div className="card__face card__face--back"></div>
-  </div>
-
-</div>
-<div className="scene scene--card">
-  <div className="card">
-    <div className="card__face card__face--front">front</div>
-    <div className="card__face card__face--back">back</div>
-  </div>
-</div>
+    <h1>Score: {score}</h1>
+      <PokemonCard 
+        isFlipped = {isFlipped}
+        handleBlinkClick = {handleBlinkClick}
+        handleClick = {handleClick}
+        name = {cardPositions[0].name}
+        imgUrl = {cardPositions[0].imgUrl} 
+      /> 
+      <PokemonCard 
+        isFlipped = {isFlipped}
+        handleBlinkClick = {handleBlinkClick}
+        handleClick = {handleClick}
+        name = {cardPositions[1].name}
+        imgUrl = {cardPositions[1].imgUrl} 
+      /> 
+      <PokemonCard 
+        isFlipped = {isFlipped}
+        handleBlinkClick = {handleBlinkClick}
+        handleClick = {handleClick}
+        name = {cardPositions[2].name}
+        imgUrl = {cardPositions[2].imgUrl} 
+      /> 
+      <PokemonCard 
+        isFlipped = {isFlipped}
+        handleBlinkClick = {handleBlinkClick}
+        handleClick = {handleClick}
+        name = {cardPositions[3].name}
+        imgUrl = {cardPositions[3].imgUrl} 
+      /> 
+      <PokemonCard 
+        isFlipped = {isFlipped}
+        handleBlinkClick = {handleBlinkClick}
+        handleClick = {handleClick}
+        name = {cardPositions[4].name}
+        imgUrl = {cardPositions[4].imgUrl} 
+      /> 
+      <PokemonCard 
+        isFlipped = {isFlipped}
+        handleBlinkClick = {handleBlinkClick}
+        handleClick = {handleClick}
+        name = {cardPositions[5].name}
+        imgUrl = {cardPositions[5].imgUrl} 
+      /> 
+      <PokemonCard 
+        isFlipped = {isFlipped}
+        handleBlinkClick = {handleBlinkClick}
+        handleClick = {handleClick}
+        name = {cardPositions[6].name}
+        imgUrl = {cardPositions[6].imgUrl} 
+      /> 
     </div>
     }
     </>
