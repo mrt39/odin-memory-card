@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react'
 import './App.css'
 
 function App() {
-
+  
   const allPokemons = [ 
-    {"name": "pikachu", "imgurl": "" }, 
-    {"name": "charmander", "imgurl": "" }, 
-    {"name": "squirtle", "imgurl": "" }, 
-    {"name": "meowth", "imgurl": "" }
+    {"name": "pikachu", "imgUrl": "" }, 
+    {"name": "charmander", "imgUrl": "" }, 
+    {"name": "squirtle", "imgUrl": "" }, 
+    {"name": "meowth", "imgUrl": "" },
+    {"name": "eevee", "imgUrl": "" }, 
+    {"name": "psyduck", "imgUrl": "" }, 
+    {"name": "bulbasaur", "imgUrl": "" },
   ]
 
   const [selectedPokemonArray, userSelects] = useState([]);
@@ -15,6 +18,42 @@ function App() {
   const [score, scoreChange] = useState(0);
 
   const [cardPositions, shuffleCards] = useState(allPokemons); //cardpositions is an array of objects that holds names and imgurl's.
+
+  const [gameStatus, statusChange] = useState(0); //gamestatus. 1 is how the game starts, 2 is game over. 
+
+  const [isFlipped, setFlipped] = useState(false);
+
+  function handleToggleFlip (event) {
+
+    //flip the card
+   //  setFlipped(!isFlipped);
+  };
+
+  function handleBlinkClick (event){
+    let clickedCard = event.currentTarget
+    //blink the card
+    // 👇️ add blinking class on click
+    clickedCard.classList.add('blinking-false');
+    console.log(isFlipped)
+    //after 1 second, remove and flip the card
+    setTimeout(function()
+    {clickedCard.classList.remove('blinking-false');
+      setFlipped(true);
+      console.log(isFlipped)
+    }
+    , 1000);
+    
+    //flip the cards back
+    setTimeout(function()
+    {setFlipped(false);
+      console.log(isFlipped)}
+    , 3000);
+   
+  }
+
+  function flipBack(){
+
+  }
   
 
   function randomizeCards(){
@@ -28,86 +67,130 @@ function App() {
     }
     shuffleCards(shuffledPokemons)
     console.log(cardPositions)
-    fillArrayWithImages()
+    //fillArrayWithImages()
+    console.log(cardPositions)
+    console.log(cardPositions[0].name) 
+    console.log(cardPositions[0].imgUrl)
   }
 
-  //fill the imgurl key in the objects within the cardPositions array
-  function fillArrayWithImages () {
+  
+  function handleClick(event){
+    //check if the clicked card is something user has clicked on before, if yes, gameover
+    if (selectedPokemonArray.includes(event.target.name)){
+      statusChange(2)
+    }
+    //check if the user has reached winning condition, if yes, win
+    //else, add it to selectedPokemonArray and increase user score
+    else {
+    userSelects(selectedPokemonArray.concat(event.target.name))
+    scoreChange(score => score + 1)
+    }
+    //randomize cards from randomizeCards() function
+    console.log(score)
+    //initate randomizing the cards
+    randomizeCards()
+  }
 
+  //restarts the game when the user clicks on "restart" after game is over
+  function restartGame(){
+    scoreChange(0)
+    statusChange(1)
+    //empty the selected pokemon array
+    userSelects([])
+  }
+
+  //get the images from the API and fill the cardPositions array after each change in cardPositions array
+  useEffect(() => {
     for (let i = 0; i < cardPositions.length; i++) {
       
       fetch('https://pokeapi.co/api/v2/pokemon/'+cardPositions[i].name)
           .then((res) => res.json())
           .then((data) => {
-            //console.log(data.sprites.other["official-artwork"].front_default);
-            cardPositions[i].imgurl = data.sprites.other["official-artwork"].front_default
+            cardPositions[i].imgUrl = data.sprites.other["official-artwork"].front_default
 
           })
           .catch((err) => {
             console.log(err.message);
           }); 
     }
-    console.log(cardPositions)  
-  }
-  
-  function handleClick(){
-    //check if the card is something user has created before, if yes, gameover
-    //check if the user has reached winning condition, if yes, win
-    //randomize cards from randomizeCards() function
-  }
 
- /*  useEffect(() => {
-    scoreChange(score => score + 1)
-
-    return () => {
-      userSelects[""] //empty the array;
-    }
-  }, [cardPositions]) */
-
-  //get the images from the API after each change in selectedPokemonArray
-  useEffect(() => {
-    //get the api and fill the cardPositions array.
-    //example:
-    //let pokemonName = cardpositions[0].pokemonname
-    //cardpositions[0].imagelink = search API with the pokemonName
-    //rinse and repeat for cardpositions[1], 2, ,3 ,4
-    
-
-
-    return () => {
-      userSelects[""] //empty the array;
-    }
   }, [cardPositions])
 
   
   return (
     <>
-    {/* these take their order from cardPositions array,  
-    cardPositions[0].pokemonName
-    cardPositions[0].imagelink
-    since these change each time user clicks on something, it will be
-    re-rendered with new values each time*/}
-    <div onClick= {randomizeCards} id='card0'>
-      1
+    {gameStatus === 0 &&
+    <>
+    <h1 onClick={() => statusChange(1)}>Start The Game</h1>
+    </>
+    }
+    {gameStatus === 2 &&
+    <>
+    <h1>Game Over</h1>
+    <h2 onClick={() => restartGame()}>Restart</h2>
+    </>
+    }
+    {gameStatus === 1 &&
+    <div id='gameContainer'> 
+      <div id='card0'>
+        <img onClick={handleClick} name={cardPositions[0].name} src={cardPositions[0].imgUrl} alt="xd" />
+      </div>
+      <div id='card1'>
+        <img onClick={handleClick} name={cardPositions[1].name} src={cardPositions[1].imgUrl} alt="xd" />
+      </div>
+      <div id='card2'>
+        <img onClick={handleClick} name={cardPositions[2].name} src={cardPositions[2].imgUrl} alt="xd" />
+      </div>
+      <div id='card3'>
+        <img onClick={handleClick} name={cardPositions[3].name} src={cardPositions[3].imgUrl} alt="xd" />
+      </div>
+      <div id='card4'>
+        <img onClick={handleClick} name={cardPositions[4].name} src={cardPositions[4].imgUrl} alt="xd" />
+      </div>
+      <div id='card5'>
+        <img onClick={handleClick} name={cardPositions[5].name} src={cardPositions[5].imgUrl} alt="xd" />
+      </div>
+      <div>
+      <div id='card6'>
+        <div name="xd" onClick={handleBlinkClick}>
+        <img onClick={handleClick} name={cardPositions[6].name} src={cardPositions[6].imgUrl} alt="xd" />
+        </div>
+      </div>
+      </div>
+      <div className="scene scene--card">
+        {/* ADD THIS TOGGLE TO THE ALREADY EXISTING handleClick function.
+        Before you change the state of isFlipped, add a function for displaying the right or wrong choices! */}
+               {/* ADD THIS TOGGLE TO THE ALREADY EXISTING handleClick function.
+        Before you change the state of isFlipped, add a function for displaying the right or wrong choices! */}
+               {/* ADD THIS TOGGLE TO THE ALREADY EXISTING handleClick function.
+        Before you change the state of isFlipped, add a function for displaying the right or wrong choices! */}
+               {/* ADD 8bit or 16bit music*/}
+  <div onClick= {handleToggleFlip} 
+  className={ isFlipped
+     ? "card is-flipped" 
+     : "card"}   >
+    <div className="card__face card__face--front">
+      <div className="blinkContainer" onClick={handleBlinkClick}>
+    <img onClick={handleClick} name={cardPositions[6].name} src={cardPositions[6].imgUrl} alt="xd" />
+      </div>
     </div>
-    <div id='card1'>
-      2
-      <img src={cardPositions[1].imgurl} alt="xd" />
+    <div className="card__face card__face--back"></div>
+  </div>
+
+</div>
+<div className="scene scene--card">
+  <div className="card">
+    <div className="card__face card__face--front">front</div>
+    <div className="card__face card__face--back">back</div>
+  </div>
+</div>
     </div>
-    <div id='card2'>
-      3
-      Score = {score}
-    </div>
-    <div id='card3'>
-      4
-    </div>
-    <div id='card4'>
-      5
-    </div>
+    }
     </>
   )
 }
 
 export default App
+
 
 
