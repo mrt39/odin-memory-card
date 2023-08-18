@@ -1,4 +1,4 @@
-function PokemonCard ({isFlipped, handleBlinkClick, handleClick, name, imgUrl}) {
+function PokemonCard ({isFlipped, handleBlinkClick, name, imgUrl}) {
 
     return (
         <div className="scene scene--card">
@@ -7,11 +7,11 @@ function PokemonCard ({isFlipped, handleBlinkClick, handleClick, name, imgUrl}) 
                 ? "card is-flipped" 
                 : "card"}   >
             <div className="card__face card__face--front">
-                <div className="blinkContainer" onClick={handleBlinkClick}>
-            <img onClick={handleClick} name={name} src={imgUrl} alt="xd" />
+                <div name={name} className="blinkContainer" onClick={handleBlinkClick}>
+            <img name={name} src={imgUrl}/>
                 </div>
             </div>
-            <div className="card__face card__face--back"></div>
+            <div  className="card__face card__face--back"></div>
             </div>
         </div>
 
