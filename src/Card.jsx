@@ -8,7 +8,8 @@ function PokemonCard ({isFlipped, handleBlinkClick, name, imgUrl}) {
                 : "card"}   >
             <div className="card__face card__face--front">
                 <div name={name} className="blinkContainer" onClick={handleBlinkClick}>
-            <img name={name} src={imgUrl}/>
+                    <img name={name} src={imgUrl}/>
+                    <h6>{name}</h6>
                 </div>
             </div>
             <div  className="card__face card__face--back"></div>

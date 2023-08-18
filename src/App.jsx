@@ -61,6 +61,9 @@ function App() {
     //blink the card red
     // 👇️ add blinking className on click
     clickedCard.classList.add('blinking-false');
+    //play the failure sound 
+    var successSound = new Audio('src/sounds/failure.mp3');
+    successSound.play();
     //after 1 second, remove and flip and execute game over condition
     setTimeout(function()
     {clickedCard.classList.remove('blinking-false');
@@ -80,6 +83,10 @@ function App() {
       //add the user selected pokemon to the selectedPokemonArray array and increase the score
       userSelects(selectedPokemonArray.concat(event.target.getAttribute("name")))
       scoreChange(score => score + 1)
+      //play the success sound 
+      var successSound = new Audio('src/sounds/success.wav');
+      successSound.play();
+
       //after 1 second, remove and flip the card
       setTimeout(function()
       {clickedCard.classList.remove('blinking-correct');
@@ -186,8 +193,8 @@ function App() {
     }
     {gameStatus === 2 &&
     <>
-    <h1>Game Over</h1>
-    <h3 className="onHoverWhitecursorPointer" onClick={() => restartGame()}>Restart</h3>
+    <h1 id="gameOver">Game Over</h1>
+    <h3 className="onHoverWhitecursorPointer restart" onClick={() => restartGame()}>Restart</h3>
     </>
     }
     {gameStatus === 3 &&
