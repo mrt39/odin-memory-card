@@ -1,3 +1,4 @@
+
 function SoundToggle ({toggleSoundOnOff, soundOn}) {
 
     return (
@@ -22,7 +23,6 @@ function SoundToggle ({toggleSoundOnOff, soundOn}) {
             <polygon points="19,10 19,11 18,11 18,10 16,10 16,12 17,12 17,13 16,13 16,15 18,15 18,14 19,14 19,15 21,15 21,13 20,13 20,12 21,12 21,10 "></polygon> 
             </g> </g></svg>
             }
-
         </div>
     )
 }

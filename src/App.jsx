@@ -3,6 +3,8 @@ import './App.css';
 import PokemonCard from './Card.jsx';
 import { TypeAnimation } from 'react-type-animation';
 import SoundToggleButton from './SoundButton.jsx';
+import ReactHowler from 'react-howler' //audio player for react (https://github.com/thangngoc89/react-howler)
+
 
 function App() {
   
@@ -184,109 +186,118 @@ function App() {
 
   
   return (
-    <>
-    {gameStatus === 0 &&
-    <>
-    <div id= "startScreen">
-    <SoundToggleButton
-    toggleSoundOnOff = {toggleSoundOnOff}
-    soundOn = {soundOn}
-    />
-
-    <img id="logo" src="src\images\logo.png" alt="" /> 
-    <br /><br />
-    {/* using the react-type-animation library
-    https://github.com/maxeth/react-type-animation */}
-    <TypeAnimation
-        sequence={[
-          "The Memory Card Game",
-          1000,
-        ]}
-        speed={40}
-        style={{ fontSize: '1.5em', fontWeight: 'bold', marginLeft: "25px" }}
+    <div>
+      {/* audio player for react.
+      hierarchically, this is above the other components so it will keep playing no matter what other component is rendered on page. */}
+      <ReactHowler
+        src="src\sounds\theme.mp3"
+        volume= "0.8"
+        loop = "true"
+        playing= {soundOn}
       />
-    <div id="startButtonsContainer">
-      <h3 className="startScreenButton" onClick={startGame}>Start The Game</h3>
-      <h3 className="startScreenButton" id='howToPlay' onClick={() => statusChange(3)}>How to Play</h3>
-    </div>
-    </div>
-    </>
-    }
-    {gameStatus === 2 &&
-    <>
-    <h1 id="gameOver">Game Over</h1>
-    <h3>Score: {score}</h3>
-    <h3 className="onHoverWhitecursorPointer restart" onClick={() => restartGame()}>Restart</h3>
-    </>
-    }
-    {gameStatus === 3 &&
-    <>
-    <span id="howToPlayContainer">
-    <div id="howToPlayDiv">
-    <TypeAnimation
-        sequence={[
-          "Don't click any of the cards more than once! You win the game if you successfully click each unique Pokemon card once.",
-          1000,
-        ]}
-        speed={60}
-        style={{ fontSize: '1.1em', fontWeight: 'bold', margin:"3rem", marginTop: "3rem"}}
+      {/* hierarchically, this sound toggle button is above the other components so it will keep playing no matter what other 
+      component is rendered on page. */}
+      <SoundToggleButton
+      toggleSoundOnOff = {toggleSoundOnOff}
+      soundOn = {soundOn}
       />
-      <h3 id= "howToReturn" onClick={() => statusChange(0)}>Return</h3>
-    </div>
-    </span>
-    </>
-    }
-    {gameStatus === 1 &&
-    <div id = "gameContainer">
-        <h1 className="onHoverWhitecursorPointer" onClick={() => returnToStartMenu()} id="returnh1">Return</h1>
-      <div id='cardsContainer'> 
-        <PokemonCard 
-          isFlipped = {isFlipped}
-          handleBlinkClick = {handleBlinkClick}
-          name = {cardPositions[0].name}
-          imgUrl = {cardPositions[0].imgUrl} 
-        /> 
-        <PokemonCard 
-          isFlipped = {isFlipped}
-          handleBlinkClick = {handleBlinkClick}
-          name = {cardPositions[1].name}
-          imgUrl = {cardPositions[1].imgUrl} 
-        /> 
-        <PokemonCard 
-          isFlipped = {isFlipped}
-          handleBlinkClick = {handleBlinkClick}
-          name = {cardPositions[2].name}
-          imgUrl = {cardPositions[2].imgUrl} 
-        /> 
-        <PokemonCard 
-          isFlipped = {isFlipped}
-          handleBlinkClick = {handleBlinkClick}
-          name = {cardPositions[3].name}
-          imgUrl = {cardPositions[3].imgUrl} 
-        /> 
-        <PokemonCard 
-          isFlipped = {isFlipped}
-          handleBlinkClick = {handleBlinkClick}
-          name = {cardPositions[4].name}
-          imgUrl = {cardPositions[4].imgUrl} 
-        /> 
-        <PokemonCard 
-          isFlipped = {isFlipped}
-          handleBlinkClick = {handleBlinkClick}
-          name = {cardPositions[5].name}
-          imgUrl = {cardPositions[5].imgUrl} 
-        /> 
-        <PokemonCard 
-          isFlipped = {isFlipped}
-          handleBlinkClick = {handleBlinkClick}
-          name = {cardPositions[6].name}
-          imgUrl = {cardPositions[6].imgUrl} 
-        /> 
+      {gameStatus === 0 &&
+      <>
+      <div id= "startScreen">
+      <img id="logo" src="src\images\logo.png" alt="" /> 
+      <br /><br />
+      {/* using the react-type-animation library
+      https://github.com/maxeth/react-type-animation */}
+      <TypeAnimation
+          sequence={[
+            "The Memory Card Game",
+            1000,
+          ]}
+          speed={40}
+          style={{ fontSize: '1.5em', fontWeight: 'bold', marginLeft: "25px" }}
+        />
+      <div id="startButtonsContainer">
+        <h3 className="startScreenButton" onClick={startGame}>Start The Game</h3>
+        <h3 className="startScreenButton" id='howToPlay' onClick={() => statusChange(3)}>How to Play</h3>
       </div>
-      <h1 id='scoreDisplay'>Score: {score}</h1>
+      </div>
+      </>
+      }
+      {gameStatus === 2 &&
+      <>
+      <h1 id="gameOver">Game Over</h1>
+      <h4>Score: {score}</h4>
+      <h3 className="onHoverWhitecursorPointer restart" onClick={() => restartGame()}>Restart</h3>
+      </>
+      }
+      {gameStatus === 3 &&
+      <>
+      <span id="howToPlayContainer">
+      <div id="howToPlayDiv">
+      <TypeAnimation
+          sequence={[
+            "Don't click any of the cards more than once! You win the game if you successfully click each unique Pokemon card once.",
+            1000,
+          ]}
+          speed={60}
+          style={{ fontSize: '1.1em', fontWeight: 'bold', margin:"3rem", marginTop: "3rem"}}
+        />
+        <h3 id= "howToReturn" onClick={() => statusChange(0)}>Return</h3>
+      </div>
+      </span>
+      </>
+      }
+      {gameStatus === 1 &&
+      <div id = "gameContainer">
+          <h1 className="onHoverWhitecursorPointer" onClick={() => returnToStartMenu()} id="returnh1">Return</h1>
+        <div id='cardsContainer'> 
+          <PokemonCard 
+            isFlipped = {isFlipped}
+            handleBlinkClick = {handleBlinkClick}
+            name = {cardPositions[0].name}
+            imgUrl = {cardPositions[0].imgUrl} 
+          /> 
+          <PokemonCard 
+            isFlipped = {isFlipped}
+            handleBlinkClick = {handleBlinkClick}
+            name = {cardPositions[1].name}
+            imgUrl = {cardPositions[1].imgUrl} 
+          /> 
+          <PokemonCard 
+            isFlipped = {isFlipped}
+            handleBlinkClick = {handleBlinkClick}
+            name = {cardPositions[2].name}
+            imgUrl = {cardPositions[2].imgUrl} 
+          /> 
+          <PokemonCard 
+            isFlipped = {isFlipped}
+            handleBlinkClick = {handleBlinkClick}
+            name = {cardPositions[3].name}
+            imgUrl = {cardPositions[3].imgUrl} 
+          /> 
+          <PokemonCard 
+            isFlipped = {isFlipped}
+            handleBlinkClick = {handleBlinkClick}
+            name = {cardPositions[4].name}
+            imgUrl = {cardPositions[4].imgUrl} 
+          /> 
+          <PokemonCard 
+            isFlipped = {isFlipped}
+            handleBlinkClick = {handleBlinkClick}
+            name = {cardPositions[5].name}
+            imgUrl = {cardPositions[5].imgUrl} 
+          /> 
+          <PokemonCard 
+            isFlipped = {isFlipped}
+            handleBlinkClick = {handleBlinkClick}
+            name = {cardPositions[6].name}
+            imgUrl = {cardPositions[6].imgUrl} 
+          /> 
+        </div>
+        <h1 id='scoreDisplay'>Score: {score}</h1>
+      </div>
+      }
     </div>
-    }
-    </>
   )
 }
 
