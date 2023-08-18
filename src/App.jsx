@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import './App.css'
-import PokemonCard from './Card.jsx'
+import './App.css';
+import PokemonCard from './Card.jsx';
 import { TypeAnimation } from 'react-type-animation';
-
+import SoundToggleButton from './SoundButton.jsx';
 
 function App() {
   
@@ -28,10 +28,23 @@ function App() {
 
   const [inBetweenClicks, setBetweenClicks] = useState(false); //prevents user from clicking another card until the cards are displayed back
 
+  const [soundOn, toggleSound] = useState(true); //prevents user from clicking another card until the cards are displayed back
+
+  
+  function toggleSoundOnOff(event){
+    toggleSound(!soundOn)
+  }
+  
+  
   function startGame(event){
     //randomize cards 
     randomizeCards()
 
+    //play game-start sound
+    if (soundOn === true) {
+    var gameStartSound = new Audio('src/sounds/game-start.mp3');
+    gameStartSound.play();
+    }
     let clickedText = event.currentTarget
     //blink the text 3 times before start
     // 👇️ add blinking className on click
@@ -62,8 +75,10 @@ function App() {
     // 👇️ add blinking className on click
     clickedCard.classList.add('blinking-false');
     //play the failure sound 
-    var successSound = new Audio('src/sounds/failure.mp3');
-    successSound.play();
+    if (soundOn === true) {
+    var failureSound = new Audio('src/sounds/failure.mp3');
+    failureSound.play();
+    }
     //after 1 second, remove and flip and execute game over condition
     setTimeout(function()
     {clickedCard.classList.remove('blinking-false');
@@ -84,9 +99,10 @@ function App() {
       userSelects(selectedPokemonArray.concat(event.target.getAttribute("name")))
       scoreChange(score => score + 1)
       //play the success sound 
+      if (soundOn === true) {
       var successSound = new Audio('src/sounds/success.wav');
       successSound.play();
-
+      }
       //after 1 second, remove and flip the card
       setTimeout(function()
       {clickedCard.classList.remove('blinking-correct');
@@ -172,6 +188,11 @@ function App() {
     {gameStatus === 0 &&
     <>
     <div id= "startScreen">
+    <SoundToggleButton
+    toggleSoundOnOff = {toggleSoundOnOff}
+    soundOn = {soundOn}
+    />
+
     <img id="logo" src="src\images\logo.png" alt="" /> 
     <br /><br />
     {/* using the react-type-animation library
@@ -194,6 +215,7 @@ function App() {
     {gameStatus === 2 &&
     <>
     <h1 id="gameOver">Game Over</h1>
+    <h3>Score: {score}</h3>
     <h3 className="onHoverWhitecursorPointer restart" onClick={() => restartGame()}>Restart</h3>
     </>
     }
