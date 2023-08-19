@@ -135,6 +135,7 @@ h6{
 
 #gameOver{
   font-size: 2.8em;
+  margin-top: 23rem;
 }
 
 .restart{
@@ -154,6 +155,10 @@ h6{
 
 .onHoverWhitecursorPointer:hover{
   color: white;
+}
+
+.winLoseImage{
+  height: 230px;
 }
 
 
@@ -330,3 +335,55 @@ svg{
   top: 7rem;
 }
 
+
+
+/* Footer */
+.footer {
+  position: absolute;
+  text-align: center;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  background-color: lightskyblue;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-firstline{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.footer p {
+  font-size: 9px;
+  color: #fff;
+  background-color: lightskyblue;
+  margin: 20px;
+
+}
+
+.footer p a {
+  font-size: 9px;
+  color: #fff;
+  background-color: lightskyblue;
+   
+}
+
+.footer svg {
+  margin-right: 30px;
+  font-size: 12px;
+  background-color: lightskyblue;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.footer svg:hover {
+  fill: gray;
+  transition: fill 0.2s ease;
+}
+
+#svgContainer{
+  background-color: lightskyblue;
+}

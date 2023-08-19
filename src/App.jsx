@@ -152,7 +152,49 @@ function App() {
     let clickedCard = event.currentTarget
     //check if the clicked card is something user has clicked on before, if yes, blink the card red and gameover
     //event.target.getAttribute("name") is how you get the nameattribute from a div
-    if (selectedPokemonArray.includes(event.target.getAttribute("name"))){
+    if (selectedPokemonArray.includes(event.target.getAttribute("name"))=== false){
+      //blink the card green
+      // 👇️ add blinking className on click
+      clickedCard.classList.add('blinking-correct');
+      //add the user selected pokemon to the selectedPokemonArray array and increase the score
+      userSelects(selectedPokemonArray.concat(event.target.getAttribute("name")))
+      scoreChange(score => score + 1)
+      //play the success sound 
+      if (soundOn === true) {
+      var successSound = new Audio('src/sounds/success.wav');
+      successSound.play();
+      }
+      //check if the user has won!
+      if (score === cardCount-1){
+        setTimeout(function()
+        {//check if the user has reached winning condition, if yes, win
+        statusChange(5);
+        }
+        , 1000);
+      }
+      //after 1 second, remove and flip the card
+      setTimeout(function()
+      {
+      clickedCard.classList.remove('blinking-correct');
+      setFlipped(true);
+      }
+      , 1000);
+      //randomize cards while flipped
+      setTimeout(function()
+      {randomizeCards();}
+      , 2000);
+      //flip the cards back
+      setTimeout(function()
+      {setFlipped(false);}
+      , 3000);
+      //let user be able to click again 
+      setTimeout(function()
+      {setBetweenClicks(false);}
+      , 4000);
+    }
+
+    //else, user choice is correct, add it to selectedPokemonArray and increase user score
+    else{
     //blink the card red
     // 👇️ add blinking className on click
     clickedCard.classList.add('blinking-false');
@@ -169,42 +211,9 @@ function App() {
     }
     , 1000);
     }
-    //TODO:
-    //check if the user has reached winning condition, if yes, win
-
-    //else, user choice is correct, add it to selectedPokemonArray and increase user score
-    else{
-      //blink the card green
-      // 👇️ add blinking className on click
-      clickedCard.classList.add('blinking-correct');
-      //add the user selected pokemon to the selectedPokemonArray array and increase the score
-      userSelects(selectedPokemonArray.concat(event.target.getAttribute("name")))
-      scoreChange(score => score + 1)
-      //play the success sound 
-      if (soundOn === true) {
-      var successSound = new Audio('src/sounds/success.wav');
-      successSound.play();
-      }
-      //after 1 second, remove and flip the card
-      setTimeout(function()
-      {clickedCard.classList.remove('blinking-correct');
-        setFlipped(true);
-      }
-      , 1000);
-      //randomize cards while flipped
-      setTimeout(function()
-      {randomizeCards();}
-      , 2000);
-      //flip the cards back
-      setTimeout(function()
-      {setFlipped(false);}
-      , 3000);
-      //let user be able to click again 
-      setTimeout(function()
-      {setBetweenClicks(false);}
-      , 4000);
-    }
    }
+
+
 
   //restarts the game when the user clicks on "restart" after game is over
   function restartGame(){
@@ -278,7 +287,15 @@ function App() {
       {gameStatus === 2 &&
       <>
       <h1 id="gameOver">Game Over</h1>
+      <img className="winLoseImage" src="https://i.giphy.com/media/ubEwB9ZVYtfyg/giphy.webp" alt="" />
       <h4>Score: {score}</h4>
+      <h3 className="onHoverWhitecursorPointer restart" onClick={() => restartGame()}>Restart</h3>
+      </>
+      }
+      {gameStatus === 5 &&
+      <>
+      <h1 id="gameOver">You Win!</h1>
+      <img className="winLoseImage" src="https://i.giphy.com/media/MhHXeM4SpKrpC/giphy.webp" alt="" />
       <h3 className="onHoverWhitecursorPointer restart" onClick={() => restartGame()}>Restart</h3>
       </>
       }
