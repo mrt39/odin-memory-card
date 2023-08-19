@@ -93,6 +93,23 @@ h6{
   margin-top: 5px;
 }
 
+
+#difficultyContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#selectDifficultyh1{
+  letter-spacing: 1px
+}
+
+#difficultySettings{
+  display: flex;
+  gap: 50px;
+}
+
 #scoreDisplay{
   margin: 0;
 }
@@ -310,6 +327,6 @@ svg{
 #soundButtonContainer{
   position: absolute;
   right: 2rem;
-  top: 5rem;
+  top: 7rem;
 }
 

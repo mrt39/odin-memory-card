@@ -5,26 +5,17 @@ import { TypeAnimation } from 'react-type-animation';
 import SoundToggleButton from './SoundButton.jsx';
 import ReactHowler from 'react-howler' //audio player for react (https://github.com/thangngoc89/react-howler)
 
-
 function App() {
   
-  const allPokemons = [ 
-    {"name": "pikachu", "imgUrl": "" }, 
-    {"name": "charmander", "imgUrl": "" }, 
-    {"name": "squirtle", "imgUrl": "" }, 
-    {"name": "meowth", "imgUrl": "" },
-    {"name": "eevee", "imgUrl": "" }, 
-    {"name": "psyduck", "imgUrl": "" }, 
-    {"name": "bulbasaur", "imgUrl": "" },
-  ]
-
   const [selectedPokemonArray, userSelects] = useState([]);
 
   const [score, scoreChange] = useState(0);
 
-  const [cardPositions, shuffleCards] = useState(allPokemons); //cardpositions is an array of objects that holds names and imgurl's.
+  const [cardCount, changeCardCount] = useState(7); //decide how many cards will be displayed on screen, based on difficulty
 
-  const [gameStatus, statusChange] = useState(0); //gamestatus. 1 is how the game starts, 2 is game over. 
+  const [cardPositions, shuffleCards] = useState([]); //cardpositions is an array of objects that holds names and imgurl's.
+
+  const [gameStatus, statusChange] = useState(0); //gamestatus. 0:startmenu, 1:game start, 2:game over, 3:how to play, 4:select difficulty.
 
   const [isFlipped, setFlipped] = useState(false);
 
@@ -32,33 +23,101 @@ function App() {
 
   const [soundOn, toggleSound] = useState(true); //prevents user from clicking another card until the cards are displayed back
 
-  
-  function toggleSoundOnOff(event){
-    toggleSound(!soundOn)
-  }
-  
-  
-  function startGame(event){
-    //randomize cards 
-    randomizeCards()
 
+  //create a pool of random pokemons, return an array of random pokemons
+  function fillThePokemonPool(){
+    //how many cards will be displayed on screen
+    let numberofPokemons = cardCount
+    //add that many objects to the array of random pokemons, 
+    for (let x = 0; x < numberofPokemons; x++){
+      cardPositions[x] = {"name": "", "imgUrl": "" }
+    }
+    //set up an array of UNIQUE random numbers 
+    let randomNumbersArray = []
+    while (randomNumbersArray.length < 8){
+      var r = Math.floor(Math.random() * 70) + 1;
+      if(randomNumbersArray.indexOf(r) === -1) randomNumbersArray.push(r);
+    }
+    console.log(randomNumbersArray)
+
+    //use random numbers as pokemon id and set up the allPokemons array with extracting data from pokemon api
+    for (let i = 0; i < randomNumbersArray.length; i++) {
+      fetch('https://pokeapi.co/api/v2/pokemon/'+randomNumbersArray[i])
+      .then((res) => res.json())
+      .then((data) => {
+        cardPositions[i].name = data.forms[0].name;
+        //randomizing the cards AFTER the process above is completed, which also triggers the effect for loading up images.
+        randomizeCards();
+      })
+      .catch((err) => {
+        console.log(err.message);
+      }); 
+      
+    }
+    console.log(cardPositions)
+  }
+
+  
+  function startMenutoDifficultyTransition(event){
     //play game-start sound
     if (soundOn === true) {
-    var gameStartSound = new Audio('src/sounds/game-start.mp3');
-    gameStartSound.play();
-    }
-    let clickedText = event.currentTarget
-    //blink the text 3 times before start
-    // 👇️ add blinking className on click
-    clickedText.classList.add('blinking-startGame');
-    //after 1 second, remove the className and execute the game start condition
+      var gameStartSound = new Audio('src/sounds/game-start.mp3');
+      gameStartSound.play();
+      }
+      let clickedText = event.currentTarget
+      //blink the text 3 times before start
+      // 👇️ add blinking className on click
+      clickedText.classList.add('blinking-startGame');
+      //after 1 second, remove the className and execute the game start condition
+      setTimeout(function()
+      {clickedText.classList.remove('blinking-startGame');
+        statusChange(4);
+      }
+      , 1000);
+  }
+
+  function startGame(){
+
+    //refill the pool
+    fillThePokemonPool()
+
+    //after 1 second, execute the game start condition
     setTimeout(function()
-    {clickedText.classList.remove('blinking-startGame');
-      statusChange(1);
+    {statusChange(1);
     }
     , 1000);
 
   }
+
+     
+
+  function randomizeCards(){
+    /* Randomize cardPositions array using Durstenfeld shuffle algorithm */
+    let shuffledPokemons = cardPositions.map(l => Object.assign({}, l)); /* this is how you copy an array of objects in react. */
+    for (var i = shuffledPokemons.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = shuffledPokemons[i];
+      shuffledPokemons[i] = shuffledPokemons[j];
+      shuffledPokemons[j] = temp;
+    }
+    shuffleCards(shuffledPokemons)
+  }
+
+  //get the images from the API and fill the cardPositions array after each change in cardPositions array
+  useEffect(() => {
+    for (let i = 0; i < cardPositions.length; i++) {
+      
+      fetch('https://pokeapi.co/api/v2/pokemon/'+cardPositions[i].name)
+          .then((res) => res.json())
+          .then((data) => {
+            cardPositions[i].imgUrl = data.sprites.other["official-artwork"].front_default
+
+          })
+          .catch((err) => {
+            console.log(err.message);
+          }); 
+    }
+  }, [cardPositions])
 
 
   function handleBlinkClick (event){
@@ -81,7 +140,7 @@ function App() {
     var failureSound = new Audio('src/sounds/failure.mp3');
     failureSound.play();
     }
-    //after 1 second, remove and flip and execute game over condition
+    //after 1 second, remove the blinking class and execute game over condition
     setTimeout(function()
     {clickedCard.classList.remove('blinking-false');
       statusChange(2);
@@ -124,18 +183,18 @@ function App() {
       {setBetweenClicks(false);}
       , 4000);
 
-
       
     }
 
    }
-
 
   //restarts the game when the user clicks on "restart" after game is over
   function restartGame(){
     scoreChange(0)
     //empty the selected pokemon array
     userSelects([])
+/*     //refill the game's pokemon pool with unique
+    shuffleCards(fillThePokemonPool) */
     //randomize cards 
     randomizeCards()
     //start the game 
@@ -153,36 +212,11 @@ function App() {
     statusChange(0)
 
   }
-
-
-  function randomizeCards(){
-    /* Randomize cardPositions array using Durstenfeld shuffle algorithm */
-    let shuffledPokemons = cardPositions.map(l => Object.assign({}, l)); /* this is how you copy an array of objects in react. */
-    for (var i = shuffledPokemons.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var temp = shuffledPokemons[i];
-      shuffledPokemons[i] = shuffledPokemons[j];
-      shuffledPokemons[j] = temp;
-    }
-    shuffleCards(shuffledPokemons)
+  
+  function toggleSoundOnOff(){
+    toggleSound(!soundOn)
   }
 
-
-  //get the images from the API and fill the cardPositions array after each change in cardPositions array
-  useEffect(() => {
-    for (let i = 0; i < cardPositions.length; i++) {
-      
-      fetch('https://pokeapi.co/api/v2/pokemon/'+cardPositions[i].name)
-          .then((res) => res.json())
-          .then((data) => {
-            cardPositions[i].imgUrl = data.sprites.other["official-artwork"].front_default
-
-          })
-          .catch((err) => {
-            console.log(err.message);
-          }); 
-    }
-  }, [cardPositions])
 
   
   return (
@@ -217,7 +251,7 @@ function App() {
           style={{ fontSize: '1.5em', fontWeight: 'bold', marginLeft: "25px" }}
         />
       <div id="startButtonsContainer">
-        <h3 className="startScreenButton" onClick={startGame}>Start The Game</h3>
+        <h3 className="startScreenButton" onClick={startMenutoDifficultyTransition}>Start The Game</h3>
         <h3 className="startScreenButton" id='howToPlay' onClick={() => statusChange(3)}>How to Play</h3>
       </div>
       </div>
@@ -246,6 +280,16 @@ function App() {
       </div>
       </span>
       </>
+      }
+      {gameStatus === 4 &&
+      <div id='difficultyContainer'>
+        <h1 id="selectDifficultyh1">Select Difficulty</h1>
+        <div id="difficultySettings">
+          <h3 className="startScreenButton" onClick={startGame}>Easy</h3>
+          <h3 className="startScreenButton" onClick={startGame}>Medium</h3>
+          <h3 className="startScreenButton" onClick={startGame}>Hard</h3>
+        </div>
+      </div>
       }
       {gameStatus === 1 &&
       <div id = "gameContainer">
@@ -302,6 +346,7 @@ function App() {
 }
 
 export default App
+
 
 
 
