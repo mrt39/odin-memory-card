@@ -11,11 +11,11 @@ function App() {
 
   const [score, scoreChange] = useState(0);
 
-  const [cardCount, changeCardCount] = useState(7); //decide how many cards will be displayed on screen, based on difficulty
+  const [cardCount, changeCardCount] = useState(0); //decide how many cards will be displayed on screen, based on difficulty
 
   const [cardPositions, shuffleCards] = useState([]); //cardpositions is an array of objects that holds names and imgurl's.
 
-  const [gameStatus, statusChange] = useState(0); //gamestatus. 0:startmenu, 1:game start, 2:game over, 3:how to play, 4:select difficulty.
+  const [gameStatus, statusChange] = useState(0); //gamestatus. 0:startmenu, 1:game start, 2:game over, 3:how to play, 4:select difficulty, 5:user wins
 
   const [isFlipped, setFlipped] = useState(false);
 
@@ -26,6 +26,7 @@ function App() {
 
   //create a pool of random pokemons, return an array of random pokemons
   function fillThePokemonPool(){
+
     //how many cards will be displayed on screen
     let numberofPokemons = cardCount
     //add that many objects to the array of random pokemons, 
@@ -34,7 +35,7 @@ function App() {
     }
     //set up an array of UNIQUE random numbers 
     let randomNumbersArray = []
-    while (randomNumbersArray.length < 8){
+    while (randomNumbersArray.length < cardCount){
       var r = Math.floor(Math.random() * 70) + 1;
       if(randomNumbersArray.indexOf(r) === -1) randomNumbersArray.push(r);
     }
@@ -76,10 +77,21 @@ function App() {
       , 1000);
   }
 
-  function startGame(){
+  function startGame(event){
 
-    //refill the pool
-    fillThePokemonPool()
+     //event.target.getAttribute("name") is how you get the nameattribute from an element
+     //as soon as cardcount changes from here, effect below this function gets activated!
+    if (event.target.getAttribute("name") === "easy"){
+      changeCardCount(6)
+
+    }
+    if (event.target.getAttribute("name") === "medium"){
+      changeCardCount(8)
+
+    }
+    if (event.target.getAttribute("name") === "hard"){
+      changeCardCount(10)
+    } 
 
     //after 1 second, execute the game start condition
     setTimeout(function()
@@ -88,6 +100,15 @@ function App() {
     , 1000);
 
   }
+  //every time user makes a difficulty choice, 
+  useEffect(() => {
+    //empty the pool
+    shuffleCards([])
+
+    //refill the pool
+    fillThePokemonPool()
+
+  }, [cardCount])
 
      
 
@@ -182,10 +203,7 @@ function App() {
       setTimeout(function()
       {setBetweenClicks(false);}
       , 4000);
-
-      
     }
-
    }
 
   //restarts the game when the user clicks on "restart" after game is over
@@ -193,8 +211,6 @@ function App() {
     scoreChange(0)
     //empty the selected pokemon array
     userSelects([])
-/*     //refill the game's pokemon pool with unique
-    shuffleCards(fillThePokemonPool) */
     //randomize cards 
     randomizeCards()
     //start the game 
@@ -206,8 +222,10 @@ function App() {
     scoreChange(0)
     //empty the selected pokemon array
     userSelects([])
-    //randomize cards 
-    randomizeCards()
+    //empty the pool
+    shuffleCards([])
+    //change card count to 0, so it changes back whenever user makes difficulty selection and the effect gets activated!
+    changeCardCount(0)
     //go to start menu
     statusChange(0)
 
@@ -285,9 +303,9 @@ function App() {
       <div id='difficultyContainer'>
         <h1 id="selectDifficultyh1">Select Difficulty</h1>
         <div id="difficultySettings">
-          <h3 className="startScreenButton" onClick={startGame}>Easy</h3>
-          <h3 className="startScreenButton" onClick={startGame}>Medium</h3>
-          <h3 className="startScreenButton" onClick={startGame}>Hard</h3>
+          <h3 className="startScreenButton" name="easy" onClick={startGame}>Easy</h3>
+          <h3 className="startScreenButton" name="medium" onClick={startGame}>Medium</h3>
+          <h3 className="startScreenButton" name="hard" onClick={startGame}>Hard</h3>
         </div>
       </div>
       }
@@ -295,50 +313,16 @@ function App() {
       <div id = "gameContainer">
           <h1 className="onHoverWhitecursorPointer" onClick={() => returnToStartMenu()} id="returnh1">Return</h1>
         <div id='cardsContainer'> 
-          <PokemonCard 
-            isFlipped = {isFlipped}
-            handleBlinkClick = {handleBlinkClick}
-            name = {cardPositions[0].name}
-            imgUrl = {cardPositions[0].imgUrl} 
-          /> 
-          <PokemonCard 
-            isFlipped = {isFlipped}
-            handleBlinkClick = {handleBlinkClick}
-            name = {cardPositions[1].name}
-            imgUrl = {cardPositions[1].imgUrl} 
-          /> 
-          <PokemonCard 
-            isFlipped = {isFlipped}
-            handleBlinkClick = {handleBlinkClick}
-            name = {cardPositions[2].name}
-            imgUrl = {cardPositions[2].imgUrl} 
-          /> 
-          <PokemonCard 
-            isFlipped = {isFlipped}
-            handleBlinkClick = {handleBlinkClick}
-            name = {cardPositions[3].name}
-            imgUrl = {cardPositions[3].imgUrl} 
-          /> 
-          <PokemonCard 
-            isFlipped = {isFlipped}
-            handleBlinkClick = {handleBlinkClick}
-            name = {cardPositions[4].name}
-            imgUrl = {cardPositions[4].imgUrl} 
-          /> 
-          <PokemonCard 
-            isFlipped = {isFlipped}
-            handleBlinkClick = {handleBlinkClick}
-            name = {cardPositions[5].name}
-            imgUrl = {cardPositions[5].imgUrl} 
-          /> 
-          <PokemonCard 
-            isFlipped = {isFlipped}
-            handleBlinkClick = {handleBlinkClick}
-            name = {cardPositions[6].name}
-            imgUrl = {cardPositions[6].imgUrl} 
-          /> 
+          {/* render all items in the cardPositions array */}
+          {cardPositions.map((cardPosition) => {
+          return <PokemonCard key={cardPosition.name} 
+          isFlipped = {isFlipped}
+          handleBlinkClick = {handleBlinkClick}
+          name = {cardPosition.name}
+          imgUrl = {cardPosition.imgUrl} />;
+          })}
         </div>
-        <h1 id='scoreDisplay'>Score: {score}</h1>
+        <h1 id='scoreDisplay'>Score: {score}/{cardCount}</h1>
       </div>
       }
     </div>
