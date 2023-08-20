@@ -43,7 +43,6 @@ function App() {
       var r = Math.floor(Math.random() * 70) + 1;
       if(randomNumbersArray.indexOf(r) === -1) randomNumbersArray.push(r);
     }
-    console.log(randomNumbersArray)
 
     //use random numbers as pokemon id and set up the allPokemons array with extracting data from pokemon api
     for (let i = 0; i < randomNumbersArray.length; i++) {
@@ -59,7 +58,7 @@ function App() {
       }); 
       
     }
-    console.log(cardPositions)
+
   }
 
   
