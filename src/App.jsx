@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
-import './App.css';
-import PokemonCard from './Card.jsx';
+import PokemonCard from './components/Card.jsx';
 import { TypeAnimation } from 'react-type-animation';
-import SoundToggleButton from './SoundButton.jsx';
+import SoundToggleButton from './components/SoundButton.jsx';
 import ReactHowler from 'react-howler' //audio player for react (https://github.com/thangngoc89/react-howler)
 
 function App() {
@@ -21,7 +20,7 @@ function App() {
 
   const [inBetweenClicks, setBetweenClicks] = useState(false); //prevents user from clicking another card until the cards are displayed back
 
-  const [soundOn, toggleSound] = useState(true); //prevents user from clicking another card until the cards are displayed back
+  const [soundOn, toggleSound] = useState(true); 
 
 
   //create a pool of random pokemons, return an array of random pokemons
@@ -62,7 +61,7 @@ function App() {
   function startMenutoDifficultyTransition(event){
     //play game-start sound
     if (soundOn === true) {
-      var gameStartSound = new Audio('src/sounds/game-start.mp3');
+      var gameStartSound = new Audio('src/assets/sounds/game-start.mp3');
       gameStartSound.play();
       }
       let clickedText = event.currentTarget
@@ -79,8 +78,8 @@ function App() {
 
   function startGame(event){
 
-     //event.target.getAttribute("name") is how you get the nameattribute from an element
-     //as soon as cardcount changes from here, effect below this function gets activated!
+    //event.target.getAttribute("name") is how you get the nameattribute from an element
+    //as soon as cardcount changes from here, useEffect below this function gets activated!
     if (event.target.getAttribute("name") === "easy"){
       changeCardCount(6)
 
@@ -161,7 +160,7 @@ function App() {
       scoreChange(score => score + 1)
       //play the success sound 
       if (soundOn === true) {
-      var successSound = new Audio('src/sounds/success.wav');
+      var successSound = new Audio('src/assets/sounds/success.wav');
       successSound.play();
       }
       //check if the user has won!
@@ -200,7 +199,7 @@ function App() {
     clickedCard.classList.add('blinking-false');
     //play the failure sound 
     if (soundOn === true) {
-    var failureSound = new Audio('src/sounds/failure.mp3');
+    var failureSound = new Audio('src/assets/sounds/failure.mp3');
     failureSound.play();
     }
     //after 1 second, remove the blinking class and execute game over condition
@@ -251,7 +250,7 @@ function App() {
       {/* audio player for react.
       hierarchically, this is above the other components so it will keep playing no matter what other component is rendered on page. */}
       <ReactHowler
-        src="src\sounds\theme.mp3"
+        src="src\assets\sounds\theme.mp3"
         volume= "0.8"
         loop = "true"
         playing= {soundOn}
@@ -265,7 +264,7 @@ function App() {
       {gameStatus === 0 &&
       <>
       <div id= "startScreen">
-      <img id="logo" src="src\images\logo.png" alt="" /> 
+      <img id="logo" src="src\assets\images\logo.png" alt="" /> 
       <br /><br />
       {/* using the react-type-animation library
       https://github.com/maxeth/react-type-animation */}
