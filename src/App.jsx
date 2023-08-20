@@ -3,6 +3,7 @@ import PokemonCard from './components/Card.jsx';
 import { TypeAnimation } from 'react-type-animation';
 import failureSoundFile from './assets/sounds/failure.mp3'
 import successSoundFile from './assets/sounds/success.wav'
+import gamestartSoundFile from './assets/sounds/game-start.mp3'
 import themeSoundFile from './assets/sounds/theme.mp3'
 import logoImg from './assets/images/logo.png'
 import SoundToggleButton from './components/SoundButton.jsx';
@@ -65,7 +66,7 @@ function App() {
   function startMenutoDifficultyTransition(event){
     //play game-start sound
     if (soundOn === true) {
-      var gameStartSound = new Audio('./src/assets/sounds/game-start.mp3');
+      var gameStartSound = new Audio(gamestartSoundFile);
       gameStartSound.play();
       }
       let clickedText = event.currentTarget
