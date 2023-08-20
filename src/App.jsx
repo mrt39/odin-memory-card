@@ -160,7 +160,7 @@ function App() {
       scoreChange(score => score + 1)
       //play the success sound 
       if (soundOn === true) {
-      var successSound = new Audio('/src/assets/sounds/success.wav');
+      var successSound = new Audio('src/assets/sounds/success.wav');
       successSound.play();
       }
       //check if the user has won!
@@ -199,7 +199,7 @@ function App() {
     clickedCard.classList.add('blinking-false');
     //play the failure sound 
     if (soundOn === true) {
-    var failureSound = new Audio('./assets/sounds/failure.mp3');
+    var failureSound = new Audio('./src/assets/sounds/failure.mp3');
     failureSound.play();
     }
     //after 1 second, remove the blinking class and execute game over condition
@@ -250,7 +250,7 @@ function App() {
       {/* audio player for react.
       hierarchically, this is above the other components so it will keep playing no matter what other component is rendered on page. */}
       <ReactHowler
-        src="\assets\sounds\theme.mp3"
+        src=".\src\assets\sounds\theme.mp3"
         volume= "0.8"
         loop = "true"
         playing= {soundOn}
@@ -264,7 +264,7 @@ function App() {
       {gameStatus === 0 &&
       <>
       <div id= "startScreen">
-      <img id="logo" src=".\src\assets\images\logo.png" alt="" /> 
+      <img id="logo" src="./src/assets/images/logo.png" alt="" /> 
       <br /><br />
       {/* using the react-type-animation library
       https://github.com/maxeth/react-type-animation */}
