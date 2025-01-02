@@ -4,7 +4,7 @@ function SoundToggle ({toggleSoundOnOff, soundOn}) {
     return (
         <div id="soundButtonContainer">
             {soundOn ?
-            <svg fill="#213547" height="100px" width="100px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" 
+            <svg fill="#213547" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" 
             viewBox="0 0 24 24" xmlSpace="preserve"
             onClick={toggleSoundOnOff}>
             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
