@@ -25,12 +25,14 @@ function App() {
 
   const [inBetweenClicks, setBetweenClicks] = useState(false); //prevents user from clicking another card until the cards are displayed back
 
-  const [soundOn, toggleSound] = useState(true); 
+  const [soundOn, toggleSound] = useState(true);
+  
+  const [loading, setLoading] = useState(false);
+  const [loadedImages, setLoadedImages] = useState(0);
 
 
   //create a pool of random pokemons, return an array of random pokemons
   function fillThePokemonPool(){
-
     //how many cards will be displayed on screen
     let numberofPokemons = cardCount
     //add that many objects to the array of random pokemons, 
@@ -43,15 +45,26 @@ function App() {
       var r = Math.floor(Math.random() * 70) + 1;
       if(randomNumbersArray.indexOf(r) === -1) randomNumbersArray.push(r);
     }
-
+    let loadedCount = 0; //count the loaded cart amount
     //use random numbers as pokemon id and set up the allPokemons array with extracting data from pokemon api
     for (let i = 0; i < randomNumbersArray.length; i++) {
       fetch('https://pokeapi.co/api/v2/pokemon/'+randomNumbersArray[i])
       .then((res) => res.json())
       .then((data) => {
         cardPositions[i].name = data.forms[0].name;
-        //randomizing the cards AFTER the process above is completed, which also triggers the effect for loading up images.
-        randomizeCards();
+        const img = new Image();
+        img.src = data.sprites.other["official-artwork"].front_default;
+        img.onload = () => {
+          cardPositions[i].imgUrl = img.src;
+          loadedCount++;
+          setLoadedImages(loadedCount);
+          if (loadedCount === cardCount) {
+            //randomizing the cards AFTER the process above is completed, which also triggers the effect for loading up images.
+            randomizeCards();
+            setLoading(false);
+            statusChange(1); // change game status to 1 after loading is complete (and display the cards, start the game)
+          }
+        };
       })
       .catch((err) => {
         console.log(err.message);
@@ -96,11 +109,7 @@ function App() {
       changeCardCount(10)
     } 
 
-    //after 1 second, execute the game start condition
-    setTimeout(function()
-    {statusChange(1);
-    }
-    , 1000);
+    setLoading(true); // Set loading state to true when starting the game
 
   }
   //every time user makes a difficulty choice, 
@@ -126,22 +135,6 @@ function App() {
     }
     shuffleCards(shuffledPokemons)
   }
-
-  //get the images from the API and fill the cardPositions array after each change in cardPositions array
-  useEffect(() => {
-    for (let i = 0; i < cardPositions.length; i++) {
-      
-      fetch('https://pokeapi.co/api/v2/pokemon/'+cardPositions[i].name)
-          .then((res) => res.json())
-          .then((data) => {
-            cardPositions[i].imgUrl = data.sprites.other["official-artwork"].front_default
-
-          })
-          .catch((err) => {
-            console.log(err.message);
-          }); 
-    }
-  }, [cardPositions])
 
 
   function handleBlinkClick (event){
@@ -247,6 +240,17 @@ function App() {
     toggleSound(!soundOn)
   }
 
+
+  if (loading) {
+    return (
+      <div id="loadingContainer">
+        <h1>Loading...</h1>
+        <div id="loadingBar">
+          <div id="loadingProgress" style={{ width: `${(loadedImages / cardCount) * 100}%` }}></div>
+        </div>
+      </div>
+    );
+  }
 
   
   return (
